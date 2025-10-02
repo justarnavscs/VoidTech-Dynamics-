@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - Zen Launcher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, #e6f0ff 0%, #d1e3ff 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-3px);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #3498db;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e6f0ff;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin: 15px 0 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .feature {
+            background: #f8fafd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-icon {
+            background: #3498db;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .instructions {
+            background: #e6f7ff;
+            border-left: 4px solid #3498db;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .app-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .app-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .app-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px;
+            background: #e6f0ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #3498db;
+        }
+
+        .app-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8fafd;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .app-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="javascript:history.back()" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>Zen Launcher Help</h1>
+            <p>Your guide to using the Zen Launcher effectively</p>
+        </header>
+
+        <div class="content">
+            <section class="intro">
+                <h2>About Zen Launcher</h2>
+                <p>Zen Launcher is a customizable web application launcher designed to help you organize and access your favorite web apps and tools from a single, clean interface. With its minimalist design and intuitive functionality, Zen Launcher enhances your productivity while maintaining a peaceful user experience.</p>
+            </section>
+
+            <section class="features">
+                <h2>Key Features</h2>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <h3>Add Apps</h3>
+                    <p>Easily add applications to your home screen using the plus button. You can choose from a wide selection of pre-configured apps or add your own custom web links.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3>Edit Mode</h3>
+                    <p>Enter edit mode to remove apps from your home screen. Simply click the edit button, then click the remove (X) button on any app you wish to delete (except the Help app).</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Search Functionality</h3>
+                    <p>Quickly find apps by typing in the search bar. The launcher will filter your apps in real-time as you type.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Time & Date</h3>
+                    <p>Always stay informed with the current time and date displayed prominently at the top of the launcher.</p>
+                </div>
+            </section>
+
+            <section class="how-to">
+                <h2>How to Use Zen Launcher</h2>
+                
+                <div class="instructions">
+                    <h3>Adding Apps to Home Screen</h3>
+                    <ol>
+                        <li>Click the green plus button at the bottom right of the screen</li>
+                        <li>Browse through the available apps in the modal window</li>
+                        <li>Click on any app to add it to your home screen</li>
+                        <li>The app will now appear on your main screen for easy access</li>
+                    </ol>
+                </div>
+                
+                <div class="instructions">
+                    <h3>Removing Apps from Home Screen</h3>
+                    <ol>
+                        <li>Click the blue edit button (pencil icon) to enter edit mode</li>
+                        <li>Click the red remove (X) button on any app you wish to delete</li>
+                        <li>The app will be immediately removed from your home screen</li>
+                        <li>Click the edit button again to exit edit mode</li>
+                    </ol>
+                </div>
+                
+                <div class="instructions">
+                    <h3>Searching for Apps</h3>
+                    <ol>
+                        <li>Click on the search bar at the top of the screen</li>
+                        <li>Start typing the name of the app you're looking for</li>
+                        <li>Apps will be filtered in real-time as you type</li>
+                        <li>Clear the search bar to see all apps again</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section class="available-apps">
+                <h2>Available Applications</h2>
+                <p>Zen Launcher comes with a variety of pre-configured applications organized into categories:</p>
+                
+                <h3>Productivity Tools</h3>
+                <div class="app-grid">
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-sticky-note"></i></div>
+                        <div class="app-name">Notes</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-calendar"></i></div>
+                        <div class="app-name">Calendar</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-file"></i></div>
+                        <div class="app-name">File Manager</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-calculator"></i></div>
+                        <div class="app-name">Calculator</div>
+                    </div>
+                </div>
+                
+                <h3>Google Services</h3>
+                <div class="app-grid">
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fab fa-google"></i></div>
+                        <div class="app-name">Google</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fab fa-youtube"></i></div>
+                        <div class="app-name">YouTube</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="app-name">Gmail</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-cloud"></i></div>
+                        <div class="app-name">Drive</div>
+                    </div>
+                </div>
+                
+                <h3>Microsoft Office</h3>
+                <div class="app-grid">
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-file-word"></i></div>
+                        <div class="app-name">Word</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-file-excel"></i></div>
+                        <div class="app-name">Excel</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fas fa-file-powerpoint"></i></div>
+                        <div class="app-name">PowerPoint</div>
+                    </div>
+                </div>
+                
+                <h3>Social Media</h3>
+                <div class="app-grid">
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fab fa-instagram"></i></div>
+                        <div class="app-name">Instagram</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fab fa-facebook"></i></div>
+                        <div class="app-name">Facebook</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fab fa-whatsapp"></i></div>
+                        <div class="app-name">WhatsApp</div>
+                    </div>
+                    <div class="app-item">
+                        <div class="app-icon"><i class="fab fa-github"></i></div>
+                        <div class="app-name">GitHub</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tips">
+                <h2>Tips & Tricks</h2>
+                <div class="instructions">
+                    <ul>
+                        <li><strong>Landscape Mode:</strong> Zen Launcher automatically adjusts to landscape orientation by hiding the header and footer for more app space.</li>
+                        <li><strong>App Organization:</strong> Add your most frequently used apps for quick access.</li>
+                        <li><strong>Help Always Available:</strong> The Help app cannot be removed, so you can always access this guide.</li>
+                        <li><strong>Data Persistence:</strong> Your app selections are saved locally, so they'll be there when you return.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="support">
+                <h2>Need More Help?</h2>
+                <p>If you have any questions or need further assistance with Zen Launcher, please contact our support team at <strong>Coming Soon</strong>.</p>
+                <p>For technical issues or feature requests, visit our GitHub repository at <strong>Comming Soon (Under Devlopment)</strong>.</p>
+            </section>
+        </div>
+
+        <footer>
+            <p>Zen Launcher • Version 2.5 • &copy; 2025 Zen OS. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple JavaScript for back button functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const backButton = document.querySelector('.back-button');
+            
+            backButton.addEventListener('click', function() {
+                window.history.back();
+            });
+        });
+    </script>
+</body>
+</html>

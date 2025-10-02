@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synapse</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Royal Green/Gold Color Scheme */
+            --primary: #0a3d2e; /* Royal Green */
+            --secondary: #1e7a5c; /* Darker Royal Green */
+            --accent: #d4af37; /* Royal Gold */
+            --danger: #c0392b;
+            --text: #d4af37; /* Gold text */
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] {
+            --primary: #f5f7fa;
+            --secondary: #e4e7eb;
+            --accent: #3498db;
+            --danger: #e74c3c;
+            --text: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+            min-height: 100vh;
+            padding: 15px;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(10, 61, 46, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--accent);
+        }
+
+        [data-theme="light"] .panel {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .panel-header i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--accent);
+        }
+
+        .time-display {
+            font-size: 3rem;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            margin: 15px 0;
+            color: var(--accent);
+        }
+
+        .date-display {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            border: none;
+            font-size: 1.2rem;
+        }
+
+        .alarm-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+
+        [data-theme="light"] .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .alarm-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .alarm-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--accent);
+        }
+
+        [data-theme="light"] .alarm-item {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .alarm-active {
+            animation: pulse 1.5s infinite;
+            border-left-color: var(--danger);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        .alarm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .alarm-content {
+            background: var(--danger);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .json-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .json-controls button {
+            flex: 1;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: vaaaar(--primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: vrrrar(--shadow);
+            display: none;
+            z-index: 1000;
+        }
+
+        [data-theme="light"] .notification {
+            color: white;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <button class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <div class="container">
+        <header>
+            <h1>Synapse</h1>
+            <p>Clock</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-clock"></i>
+                    <h2>Digital Clock</h2>
+                </div>
+                <div class="time-display" id="time">00:00:00</div>
+                <div class="date-display" id="date">Monday, January 1, 2023</div>
+                <div class="next-alarm">
+                    <p>Next Alarm: <span id="next-alarm">None</span></p>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-bell"></i>
+                    <h2>Alarms</h2>
+                </div>
+                
+                <div class="alarm-form">
+                    <div class="form-group">
+                        <label for="alarm-time">Time</label>
+                        <input type="time" class="form-control" id="alarm-time" value="07:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="alarm-label">Label</label>
+                        <input type="text" class="form-control" id="alarm-label" placeholder="Alarm name">
+                    </div>
+                    
+                    <button class="btn btn-primary" id="add-alarm">
+                        <i class="fas fa-plus"></i> Add Alarm
+                    </button>
+                </div>
+                
+                <div class="alarm-list" id="alarm-list">
+                    <!-- Alarms will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alarm-modal" id="alarm-modal">
+        <div class="alarm-content">
+            <h2>ALARM!</h2>
+            <p id="alarm-message">Wake Up!</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="btn btn-primary" id="snooze-alarm">
+                    <i class="fas fa-bed"></i> Snooze
+                </button>
+                <button class="btn btn-danger" id="dismiss-alarm">
+                    <i class="fas fa-check"></i> Dismiss
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <audio id="alarm-sound" loop>
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3" type="audio/mp3">
+    </audio>
+    
+    <script>
+        // DOM Elements
+        const timeDisplay = document.getElementById('time');
+        const dateDisplay = document.getElementById('date');
+        const nextAlarmDisplay = document.getElementById('next-alarm');
+        const alarmTimeInput = document.getElementById('alarm-time');
+        const alarmLabelInput = document.getElementById('alarm-label');
+        const addAlarmBtn = document.getElementById('add-alarm');
+        const alarmList = document.getElementById('alarm-list');
+        const alarmModal = document.getElementById('alarm-modal');
+        const alarmMessage = document.getElementById('alarm-message');
+        const snoozeAlarmBtn = document.getElementById('snooze-alarm');
+        const dismissAlarmBtn = document.getElementById('dismiss-alarm');
+        const alarmSound = document.getElementById('alarm-sound');
+        const notification = document.getElementById('notification');
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Global Variables
+        let alarms = [];
+        let activeAlarmId = null;
+        let alarmTimeout = null;
+
+        // Initialize the app
+        function init() {
+            loadAlarms();
+            updateClock();
+            setInterval(updateClock, 1000);
+            setInterval(checkAlarms, 1000);
+            
+            // Event Listeners
+            addAlarmBtn.addEventListener('click', addAlarm);
+            snoozeAlarmBtn.addEventListener('click', snoozeAlarm);
+            dismissAlarmBtn.addEventListener('click', dismissAlarm);
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            // Load saved theme preference
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            body.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        // Theme Functions
+        function toggleTheme() {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = theme === 'dark' ? 'fa-moon' : 'fa-sun';
+            themeToggle.innerHTML = `<i class="fas ${icon}"></i>`;
+        }
+
+        // Clock Functions
+        function updateClock() {
+            const now = new Date();
+            
+            // Update time display
+            const timeString = now.toLocaleTimeString('en-US', {hour12: false});
+            timeDisplay.textContent = timeString;
+            
+            // Update date display
+            const dateString = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            dateDisplay.textContent = dateString;
+            
+            // Update next alarm display
+            updateNextAlarm();
+        }
+
+        // Alarm Functions
+        function loadAlarms() {
+            const savedAlarms = localStorage.getItem('alarms');
+            if (savedAlarms) {
+                alarms = JSON.parse(savedAlarms);
+                renderAlarms();
+            }
+        }
+
+        function saveAlarms() {
+            localStorage.setItem('alarms', JSON.stringify(alarms));
+        }
+
+        function addAlarm() {
+            const time = alarmTimeInput.value;
+            const label = alarmLabelInput.value || "Alarm";
+            
+            if (!time) {
+                showNotification('Please set a time for the alarm');
+                return;
+            }
+            
+            const newAlarm = {
+                id: Date.now().toString(),
+                time,
+                label,
+                active: true,
+                createdAt: new Date().toISOString()
+            };
+            
+            alarms.push(newAlarm);
+            saveAlarms();
+            renderAlarms();
+            
+            // Reset form
+            alarmLabelInput.value = "";
+            showNotification('Alarm added successfully');
+        }
+
+        function renderAlarms() {
+            alarmList.innerHTML = '';
+            
+            if (alarms.length === 0) {
+                alarmList.innerHTML = '<p style="text-align: center;">No alarms set</p>';
+                return;
+            }
+            
+            alarms.forEach((alarm) => {
+                const alarmItem = document.createElement('div');
+                alarmItem.className = `alarm-item ${activeAlarmId === alarm.id ? 'alarm-active' : ''}`;
+                
+                alarmItem.innerHTML = `
+                    <div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">${alarm.time} - ${alarm.label}</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8;">Created: ${new Date(alarm.createdAt).toLocaleString()}</div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${alarm.active ? 'checked' : ''} 
+                                onchange="toggleAlarm('${alarm.id}')">
+                            <span class="slider"></span>
+                        </label>
+                        <button class="btn btn-danger" onclick="deleteAlarm('${alarm.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                alarmList.appendChild(alarmItem);
+            });
+        }
+
+        function toggleAlarm(id) {
+            const alarmIndex = alarms.findIndex(a => a.id === id);
+            if (alarmIndex !== -1) {
+                alarms[alarmIndex].active = !alarms[alarmIndex].active;
+                saveAlarms();
+                renderAlarms();
+                updateNextAlarm();
+            }
+        }
+
+        function deleteAlarm(id) {
+            alarms = alarms.filter(a => a.id !== id);
+            saveAlarms();
+            renderAlarms();
+            updateNextAlarm();
+            showNotification('Alarm deleted');
+        }
+
+        function checkAlarms() {
+            if (activeAlarmId) return;
+            
+            const now = new Date();
+            const currentHours = now.getHours().toString().padStart(2, '0');
+            const currentMinutes = now.getMinutes().toString().padStart(2, '0');
+            const currentTime = `${currentHours}:${currentMinutes}`;
+            
+            for (const alarm of alarms) {
+                if (!alarm.active) continue;
+                
+                if (alarm.time === currentTime) {
+                    triggerAlarm(alarm);
+                    break;
+                }
+            }
+        }
+
+        function triggerAlarm(alarm) {
+            activeAlarmId = alarm.id;
+            alarmMessage.textContent = `${alarm.time} - ${alarm.label}`;
+            alarmModal.style.display = 'flex';
+            alarmSound.currentTime = 0;
+            alarmSound.play();
+            renderAlarms();
+            
+            // Auto-dismiss after 1 minute
+            alarmTimeout = setTimeout(() => {
+                dismissAlarm();
+            }, 60000);
+        }
+
+        function dismissAlarm() {
+            activeAlarmId = null;
+            alarmModal.style.display = 'none';
+            alarmSound.pause();
+            clearTimeout(alarmTimeout);
+            renderAlarms();
+        }
+
+        function snoozeAlarm() {
+            if (!activeAlarmId) return;
+            
+            const alarm = alarms.find(a => a.id === activeAlarmId);
+            if (!alarm) return;
+            
+            dismissAlarm();
+            
+            // Add 5 minutes to current time for snooze
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 5);
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const snoozeTime = `${hours}:${minutes}`;
+            
+            const snoozeAlarm = {
+                id: Date.now().toString(),
+                time: snoozeTime,
+                label: `Snooze: ${alarm.label}`,
+                active: true,
+                createdAt: new Date().toISOString()
+            };
+            
+            alarms.push(snoozeAlarm);
+            saveAlarms();
+            renderAlarms();
+            showNotification('Alarm snoozed for 5 minutes');
+        }
+
+        function updateNextAlarm() {
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes();
+            
+            let nextAlarm = null;
+            let minDiff = Infinity;
+            
+            for (const alarm of alarms) {
+                if (!alarm.active) continue;
+                
+                const [hours, minutes] = alarm.time.split(':').map(Number);
+                const alarmTime = hours * 60 + minutes;
+                
+                let diff = alarmTime - currentTime;
+                if (diff < 0) diff += 24 * 60; // Next day
+                
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    nextAlarm = alarm;
+                }
+            }
+            
+            if (nextAlarm) {
+                nextAlarmDisplay.textContent = `${nextAlarm.time} - ${nextAlarm.label}`;
+            } else {
+                nextAlarmDisplay.textContent = "None";
+            }
+        }
+
+        // Helper Functions
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            notification.style.background = type === 'success' ? 'var(--accent)' : 'var(--danger)';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize the app
+        window.addEventListener('load', init);
+        window.toggleAlarm = toggleAlarm;
+        window.deleteAlarm = deleteAlarm;
+    </script>
+</body>
+</html>
