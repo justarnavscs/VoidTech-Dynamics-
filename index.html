@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synapse Nexus</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+    
+    * { 
+      box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    #backdrop {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100vw; 
+      height: 100vh;
+      background: radial-gradient(circle at 20% 30%, #0f1a2a, #0a0a0f 70%);
+      z-index: -1;
+    }
+    
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.6;
+    }
+    
+    .panel {
+      width: 420px;
+      padding: 2.5rem;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+    }
+    
+    .panel:hover {
+      box-shadow: 0 12px 40px rgba(56, 189, 248, 0.15);
+    }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 600;
+      font-size: 1.5rem;
+      color: #f8fafc;
+      letter-spacing: -0.5px;
+    }
+    
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.95rem;
+      background: rgba(15, 23, 42, 0.7);
+      color: #f1f5f9;
+      transition: all 0.2s ease;
+    }
+    
+    input::placeholder {
+      color: #94a3b8;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+      background: rgba(15, 23, 42, 0.9);
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 0.5rem;
+    }
+    
+    #loginBtn {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: white;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+    }
+    
+    #loginBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.4);
+    }
+    
+    #loginBtn:active {
+      transform: translateY(0);
+    }
+    
+    #recoveryBtn {
+      background: transparent;
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    #recoveryBtn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+    
+    .status {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      min-height: 1.2em;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+    
+    .status.success {
+      background: rgba(34, 197, 94, 0.1);
+      color: #4ade80;
+    }
+    
+    .status.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: #f87171;
+    }
+    
+    .status.info {
+      background: rgba(56, 189, 248, 0.1);
+      color: #7dd3fc;
+    }
+    
+    .shake {
+      animation: shake 0.4s ease;
+    }
+    
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-4px); }
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+    
+    .logo-subtext {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+    
+    /* Mobile Responsive Adjustments */
+    @media only screen and (max-width: 600px) {
+      .panel {
+        width: 90%;
+        margin: 1rem auto;
+        padding: 2rem 1.5rem;
+      }
+      
+      input, button {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+      }
+      
+      h2 {
+        font-size: 1.3rem;
+      }
+      
+      .logo-text {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media only screen and (max-width: 400px) {
+      .panel {
+        padding: 1.5rem 1.2rem;
+      }
+      
+      input, button {
+        margin: 8px 0;
+        padding: 10px 12px;
+        font-size: 0.85rem;
+      }
+      
+      .status {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="backdrop"></div>
+<canvas id="particles"></canvas>
+
+<div class="panel" id="loginPanel">
+  <div class="logo">
+    <div class="logo-text">SYNAPSE NEXUS</div>
+    <div class="logo-subtext">SECURE ACCESS PORTAL</div>
+  </div>
+  
+  <h2 id="panelTitle">Authentication Required</h2>
+  
+  <div class="input-group">
+    <input id="username" placeholder="Username" autocomplete="username">
+  </div>
+  
+  <div class="input-group">
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+  </div>
+  
+  <div class="input-group">
+    <input id="pinInput" type="password" maxlength="4" placeholder="Enter PIN" autocomplete="one-time-code">
+  </div>
+  
+  <button id="loginBtn" onclick="handleLogin()">Authenticate</button>
+  <button id="recoveryBtn" onclick="triggerRecovery()">Recover Access</button>
+  
+  <div class="status" id="status"></div>
+  
+  <div class="footer">
+    Secure connection • v2.4.1
+  </div>
+</div>
+
+<script>
+const credentials = {
+  "owner": "owner@Arnav@SVQLX",
+  "admin": "admin@19566",
+  "operator": "Ops@@1SVQLX",
+  "user1": "user12337",
+  "user2": "user@ussr@20013",
+  "Vikhyat": "Vikki@201212",
+  "user4": "user@58392",
+  "user5": "user@72914",
+  "user6": "user@36107",
+  "user7": "user@10485",
+  "user8": "user@59234",
+  "user9": "user@87321",
+  "user10": "user@34876",
+  "user11": "user@91542",
+  "user12": "user@68703",
+  "user13": "user@40712",
+  "user14": "user@52098",
+  "user15": "user@30271",
+  "user16": "user@68340",
+  "user17": "user@44579",
+  "user18": "user@24567",
+  "user19": "user@78902",
+  "user20": "user@43056",
+  "user21": "user@53789",
+  "user22": "user@27845",
+  "user23": "user@64021",
+  "user24": "user@91432",
+  "user25": "user@35908",
+  "user26": "user@72643",
+  "user27": "user@80329",
+  "user28": "user@14257",
+  "user29": "user@65879",
+  "user30": "user@91862",
+  "user31": "user@70543",
+  "user32": "user@32867",
+  "user33": "user@47691",
+  "user34": "user@53480",
+  "user35": "user@28573",
+  "user36": "user@69014",
+  "user37": "user@84129",
+  "user38": "user@42075",
+  "user39": "user@37981",
+  "user40": "user@95837",
+  "user41": "user@61724",
+  "user42": "user@30498",
+  "user43": "user@87260",
+  "user44": "user@46923",
+  "user45": "user@74130",
+  "user46": "user@52867",
+  "user47": "user@19345",
+  "user48": "user@65980",
+  "user49": "user@82714",
+  "user50": "user@37462"
+};
+
+const username = document.getElementById("username");
+const password = document.getElementById("password");
+const pinInput = document.getElementById("pinInput");
+const status = document.getElementById("status");
+const loginPanel = document.getElementById("loginPanel");
+const panelTitle = document.getElementById("panelTitle");
+const loginBtn = document.getElementById("loginBtn");
+const recoveryBtn = document.getElementById("recoveryBtn");
+
+let recoveryMode = false;
+
+// Initialize particles
+initParticles();
+
+username.addEventListener("input", () => {
+  const cleanUser = username.value.trim();
+  if (cleanUser) {
+    if (credentials.hasOwnProperty(cleanUser)) {
+      updateStatus("✅ Username recognized", "success");
+    } else {
+      updateStatus("❌ Unknown user", "error");
+    }
+  } else {
+    clearStatus();
+  }
+});
+
+function handleLogin() {
+  const rawUser = username.style.display === "none"
+    ? localStorage.getItem("lastUser")
+    : username.value;
+  const cleanUser = rawUser.trim();
+  const cleanPassword = password.value.trim();
+  const cleanPin = pinInput.value.trim();
+  const storedPin = localStorage.getItem("pin_" + cleanUser);
+
+  if (!/^[\w\d]+$/.test(cleanUser)) {
+    updateStatus("❌ Invalid username format", "error");
+    shakePanel();
+    return;
+  }
+
+  if (!credentials.hasOwnProperty(cleanUser)) {
+    updateStatus("❌ Unknown user", "error");
+    shakePanel();
+    return;
+  }
+
+  if (recoveryMode) {
+    if (credentials[cleanUser] !== cleanPassword) {
+      updateStatus("❌ Incorrect password", "error");
+      shakePanel();
+      return;
+    }
+
+    if (/^\d{4}$/.test(cleanPin)) {
+      localStorage.setItem("pin_" + cleanUser, cleanPin);
+      localStorage.setItem("lastUser", cleanUser);
+      updateStatus("✅ PIN reset successful!", "success");
+      recoveryMode = false;
+      resetUI();
+      setTimeout(() => window.location.href = "launcher.html", 800);
+    } else {
+      updateStatus("❌ Enter a valid 4-digit new PIN", "error");
+      shakePanel();
+    }
+    return;
+  }
+
+  // ✅ FIXED: Enforce password check during first-time login
+  if (!storedPin) {
+    if (credentials[cleanUser] !== cleanPassword) {
+      updateStatus("❌ Incorrect password", "error");
+      shakePanel();
+      return;
+    }
+
+    if (/^\d{4}$/.test(cleanPin)) {
+      localStorage.setItem("pin_" + cleanUser, cleanPin);
+      localStorage.setItem("lastUser", cleanUser);
+      updateStatus("✅ PIN set. Login successful!", "success");
+      setTimeout(() => window.location.href = "launcher.html", 800);
+    } else {
+      updateStatus("❌ Please enter a 4-digit PIN", "error");
+      shakePanel();
+    }
+    return;
+  }
+
+  if (cleanPin === storedPin) {
+    localStorage.setItem("lastUser", cleanUser);
+    updateStatus("✅ Login successful!", "success");
+    setTimeout(() => window.location.href = "launcher.html", 800);
+  } else {
+    updateStatus("❌ Incorrect PIN", "error");
+    shakePanel();
+  }
+}
+
+function triggerRecovery() {
+  recoveryMode = true;
+  username.style.display = "block";
+  password.style.display = "block";
+  pinInput.placeholder = "Set a new 4-digit PIN";
+  panelTitle.innerText = "Recover Access";
+  updateStatus("Enter username, password, and new PIN", "info");
+  loginBtn.innerText = "Reset PIN";
+  recoveryBtn.innerText = "Cancel Recovery";
+  recoveryBtn.onclick = cancelRecovery;
+}
+
+function cancelRecovery() {
+  recoveryMode = false;
+  resetUI();
+  clearStatus();
+}
+
+function resetUI() {
+  panelTitle.innerText = "Authentication Required";
+  pinInput.placeholder = "Enter PIN";
+  loginBtn.innerText = "Authenticate";
+  recoveryBtn.innerText = "Recover Access";
+  recoveryBtn.onclick = triggerRecovery;
+}
+
+function updateStatus(message, type) {
+  status.textContent = message;
+  status.className = "status";
+  if (type) {
+    status.classList.add(type);
+  }
+}
+
+function clearStatus() {
+  status.textContent = "";
+  status.className = "status";
+}
+
+function shakePanel() {
+  loginPanel.classList.add("shake");
+  setTimeout(() => loginPanel.classList.remove("shake"), 400);
+}
+
+window.onload = () => {
+  const lastUser = localStorage.getItem("lastUser");
+  const storedPin = lastUser ? localStorage.getItem("pin_" + lastUser) : null;
+
+  if (lastUser && storedPin) {
+    username.style.display = "none";
+    password.style.display = "none";
+    pinInput.placeholder = `Enter PIN for ${lastUser}`;
+    panelTitle.innerText = `PIN Authentication`;
+  }
+};
+
+// Particle background effect
+function initParticles() {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = Math.random() * 0.5 - 0.25;
+      this.speedY = Math.random() * 0.5 - 0.25;
+      this.color = `rgba(56, 189, 248, ${Math.random() * 0.4 + 0.1})`;
+    }
+    
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      
+      if (this.x > canvas.width) this.x = 0;
+      if (this.x < 0) this.x = canvas.width;
+      if (this.y > canvas.height) this.y = 0;
+      if (this.y < 0) this.y = canvas.height;
+    }
+    
+    draw() {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  
+  function createParticles() {
+    particles = [];
+    for (let i = 0; i < 80; i++) {
+      particles.push(new Particle());
+    }
+  }
+  
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+      
+      // Draw connections between nearby particles
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < 100) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(56, 189, 248, ${0.1 * (1 - distance/100)})`;
+          ctx.lineWidth = 0.5;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    
+    requestAnimationFrame(animateParticles);
+  }
+  
+  createParticles();
+  animateParticles();
+}
+</script>
+</body>
+</html>
