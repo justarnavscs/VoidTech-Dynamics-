@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location SMS Sender</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .permission-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #e9ecef;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-granted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-denied {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .location-info {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .location-info p {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .location-info strong {
+            color: var(--primary);
+        }
+
+        .timer-display {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 15px 0;
+            padding: 10px;
+            background: #f0f4ff;
+            border-radius: 8px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8rem;
+            color: var(--gray);
+            border-top: 1px solid #e9ecef;
+        }
+
+        .phone-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .phone-input select {
+            width: 30%;
+        }
+
+        .phone-input input {
+            width: 70%;
+        }
+
+        .interval-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .interval-selector button {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .active-interval {
+            background: var(--secondary) !important;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 12px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-map-marker-alt"></i> Location SMS Sender</h1>
+            <p>Send your location via SMS at regular intervals</p>
+        </div>
+        
+        <div class="content">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-shield-alt"></i> Location Permission
+                </div>
+                <div class="permission-status">
+                    <span>Location Access</span>
+                    <span class="status-badge status-pending">Pending</span>
+                </div>
+                <button id="permission-btn" class="btn btn-primary">
+                    <i class="fas fa-location-arrow"></i> Grant Location Permission
+                </button>
+            </div>
+            
+            <div id="setup-section" class="hidden">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-cogs"></i> SMS Setup
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone-number">Recipient Phone Number</label>
+                        <div class="phone-input">
+                            <select class="form-control" id="country-code">
+                                <option value="+1">+1 (US)</option>
+                                <option value="+44">+44 (UK)</option>
+                                <option value="+91">+91 (IN)</option>
+                                <option value="+61">+61 (AU)</option>
+                                <option value="+49">+49 (DE)</option>
+                            </select>
+                            <input type="tel" class="form-control" id="phone-number" placeholder="Phone number">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Time Interval</label>
+                        <div class="interval-selector">
+                            <button class="btn interval-btn active-interval" data-interval="5">5 min</button>
+                            <button class="btn interval-btn" data-interval="15">15 min</button>
+                            <button class="btn interval-btn" data-interval="30">30 min</button>
+                        </div>
+                    </div>
+                    
+                    <button id="start-btn" class="btn btn-success">
+                        <i class="fas fa-play"></i> Start Location Updates
+                    </button>
+                </div>
+                
+                <div id="active-section" class="card hidden">
+                    <div class="card-title">
+                        <i class="fas fa-satellite-dish"></i> Active Tracking
+                    </div>
+                    
+                    <div class="timer-display">
+                        Next SMS in: <span id="countdown">05:00</span>
+                    </div>
+                    
+                    <div class="location-info">
+                        <p><strong>Last Location:</strong> <span id="last-location">Not available yet</span></p>
+                        <p><strong>Last SMS Sent:</strong> <span id="last-sms">Not sent yet</span></p>
+                        <p><strong>Messages Sent:</strong> <span id="sms-count">0</span></p>
+                    </div>
+                    
+                    <button id="stop-btn" class="btn btn-warning">
+                        <i class="fas fa-stop"></i> Stop Location Updates
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>This app works without internet connection. Location data is sent via SMS.</p>
+        </div>
+    </div>
+
+    <div id="notification" class="notification hidden"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const permissionBtn = document.getElementById('permission-btn');
+            const setupSection = document.getElementById('setup-section');
+            const activeSection = document.getElementById('active-section');
+            const startBtn = document.getElementById('start-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const intervalBtns = document.querySelectorAll('.interval-btn');
+            const countdownDisplay = document.getElementById('countdown');
+            const lastLocationDisplay = document.getElementById('last-location');
+            const lastSmsDisplay = document.getElementById('last-sms');
+            const smsCountDisplay = document.getElementById('sms-count');
+            const permissionStatus = document.querySelector('.status-badge');
+            const notification = document.getElementById('notification');
+            
+            // App State
+            let locationPermission = false;
+            let smsPermission = false;
+            let trackingActive = false;
+            let countdownInterval;
+            let timeRemaining = 5 * 60; // 5 minutes in seconds
+            let selectedInterval = 5; // minutes
+            let smsCount = 0;
+            let locationWatchId = null;
+            
+            // Event Listeners
+            permissionBtn.addEventListener('click', requestPermissions);
+            startBtn.addEventListener('click', startTracking);
+            stopBtn.addEventListener('click', stopTracking);
+            
+            intervalBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    intervalBtns.forEach(b => b.classList.remove('active-interval'));
+                    this.classList.add('active-interval');
+                    selectedInterval = parseInt(this.getAttribute('data-interval'));
+                    timeRemaining = selectedInterval * 60;
+                    updateCountdownDisplay();
+                });
+            });
+            
+            // Functions
+            function requestPermissions() {
+                // Request location permission
+                if (!navigator.geolocation) {
+                    showNotification("Geolocation is not supported by this browser.", "error");
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        // Location permission granted
+                        locationPermission = true;
+                        permissionStatus.textContent = "Granted";
+                        permissionStatus.className = "status-badge status-granted";
+                        permissionBtn.textContent = "Permission Granted";
+                        permissionBtn.disabled = true;
+                        setupSection.classList.remove('hidden');
+                        
+                        // Update with current location
+                        updateLocationDisplay(position);
+                        
+                        // Request SMS permission
+                        requestSmsPermission();
+                    },
+                    function(error) {
+                        // Location permission denied
+                        locationPermission = false;
+                        permissionStatus.textContent = "Denied";
+                        permissionStatus.className = "status-badge status-denied";
+                        permissionBtn.textContent = "Permission Denied - Try Again";
+                        showNotification("Location permission is required for this app to function.", "error");
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            }
+            
+            function requestSmsPermission() {
+                // Check if SMS API is available
+                if (!navigator.sms) {
+                    showNotification("SMS API is not supported on this device.", "error");
+                    return;
+                }
+                
+                // Request SMS permission
+                navigator.permissions.query({name: 'sms'}).then(function(result) {
+                    if (result.state === 'granted') {
+                        smsPermission = true;
+                        showNotification("SMS permission granted!", "success");
+                    } else if (result.state === 'prompt') {
+                        // Request permission
+                        navigator.sms.requestPermission().then(function() {
+                            smsPermission = true;
+                            showNotification("SMS permission granted!", "success");
+                        }).catch(function(error) {
+                            smsPermission = false;
+                            showNotification("SMS permission is required to send location updates.", "error");
+                        });
+                    } else {
+                        smsPermission = false;
+                        showNotification("SMS permission denied. Please enable it in your browser settings.", "error");
+                    }
+                });
+            }
+            
+            function updateLocationDisplay(position) {
+                const latitude = position.coords.latitude.toFixed(6);
+                const longitude = position.coords.longitude.toFixed(6);
+                lastLocationDisplay.textContent = `${latitude}, ${longitude}`;
+            }
+            
+            function startTracking() {
+                const phoneNumber = document.getElementById('phone-number').value;
+                const countryCode = document.getElementById('country-code').value;
+                
+                if (!phoneNumber) {
+                    showNotification("Please enter a phone number", "error");
+                    return;
+                }
+                
+                if (!locationPermission) {
+                    showNotification("Location permission is required", "error");
+                    return;
+                }
+                
+                if (!smsPermission) {
+                    showNotification("SMS permission is required", "error");
+                    return;
+                }
+                
+                trackingActive = true;
+                activeSection.classList.remove('hidden');
+                startBtn.disabled = true;
+                
+                // Start countdown
+                startCountdown();
+                
+                // Get initial location and send first SMS
+                sendLocationSMS();
+                
+                // Set up periodic location updates
+                const intervalMs = selectedInterval * 60 * 1000;
+                setInterval(() => {
+                    if (trackingActive) {
+                        sendLocationSMS();
+                        timeRemaining = selectedInterval * 60;
+                        updateCountdownDisplay();
+                    }
+                }, intervalMs);
+                
+                // Start watching position for real-time updates
+                locationWatchId = navigator.geolocation.watchPosition(
+                    function(position) {
+                        updateLocationDisplay(position);
+                    },
+                    function(error) {
+                        console.error("Error watching position:", error);
+                        lastLocationDisplay.textContent = "Error getting location";
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            }
+            
+            function stopTracking() {
+                trackingActive = false;
+                activeSection.classList.add('hidden');
+                startBtn.disabled = false;
+                clearInterval(countdownInterval);
+                
+                if (locationWatchId) {
+                    navigator.geolocation.clearWatch(locationWatchId);
+                    locationWatchId = null;
+                }
+                
+                showNotification("Location tracking stopped", "success");
+            }
+            
+            function startCountdown() {
+                clearInterval(countdownInterval);
+                countdownInterval = setInterval(() => {
+                    if (trackingActive && timeRemaining > 0) {
+                        timeRemaining--;
+                        updateCountdownDisplay();
+                    }
+                }, 1000);
+            }
+            
+            function updateCountdownDisplay() {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                countdownDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            function sendLocationSMS() {
+                if (!navigator.geolocation) return;
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude.toFixed(6);
+                        const longitude = position.coords.longitude.toFixed(6);
+                        const phoneNumber = document.getElementById('phone-number').value;
+                        const countryCode = document.getElementById('country-code').value;
+                        const fullPhoneNumber = countryCode + phoneNumber;
+                        
+                        // Update display
+                        updateLocationDisplay(position);
+                        
+                        // Send SMS with location
+                        sendSMS(fullPhoneNumber, latitude, longitude);
+                        
+                        // Update UI
+                        smsCount++;
+                        smsCountDisplay.textContent = smsCount;
+                        lastSmsDisplay.textContent = new Date().toLocaleTimeString();
+                    },
+                    function(error) {
+                        console.error("Error getting location:", error);
+                        lastLocationDisplay.textContent = "Error getting location";
+                        showNotification("Error getting location: " + error.message, "error");
+                    }
+                );
+            }
+            
+            function sendSMS(phoneNumber, lat, lon) {
+                // Check if SMS API is available
+                if (!navigator.sms) {
+                    showNotification("SMS API not supported on this device", "error");
+                    return;
+                }
+                
+                const message = `My current location is: Latitude ${lat}, Longitude ${lon}. Sent via Location SMS Sender App.`;
+                
+                // Send SMS
+                navigator.sms.send(phoneNumber, message)
+                    .then(() => {
+                        showNotification(`Location sent to ${phoneNumber}`, "success");
+                        console.log(`SMS sent to ${phoneNumber}: ${message}`);
+                    })
+                    .catch(error => {
+                        showNotification(`Failed to send SMS: ${error.message}`, "error");
+                        console.error("SMS sending failed:", error);
+                    });
+            }
+            
+            function showNotification(message, type) {
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.remove('hidden');
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.classList.add('hidden');
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
